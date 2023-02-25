@@ -3,35 +3,37 @@ const router = express.Router();
 
 /* require("dotenv").config(); */
 
-const hosSchema = require("../models/hosSchema");
+const medSchema = require("../models/medSchema");
 
 /* CREACIÓN DE RUTAS POR FUNCIONALIDAD */
 
 /* 1. CREACIÓN REGISTRO DE USUARIOS */
 
 router.post("/register", async (req, res) => {
-  const { idHos, password, name, address, services, verified, email, phone } =
+  const sessionNum = 0;
+  const { idMed, password, name, address, dob, verified, email, phone } =
     req.body;
-  const isHos = await hosSchema.find({ idHos: idHos }).exec();
-  if (isHos.length == 0) {
-    const newHos = new hosSchema({
-      idHos,
+  const isMed = await medSchema.find({ idMed: idMed }).exec();
+  if (isMed.length == 0) {
+    const newMed = new medSchema({
+      idMed,
       password,
       name,
       address,
-      services,
+      dob,
       verified,
       email,
       phone,
+      sessionNum,
     });
-    await newHos.save();
+    await newMed.save();
     res.json({
       statusCode: 200,
-      status: "¡Hospital guardado!",
+      status: "¡Médico guardado!",
     });
   } else {
     res.json({
-      status: "No se puede crear, el hospital ya existe",
+      status: "No se puede crear, el médico ya existe",
     });
   }
 });

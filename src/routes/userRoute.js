@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
     });
   } else {
     res.json({
-      status: "El usuario ya existe",
+      status: "No se puede crear, el usuario ya existe",
     });
   }
 });

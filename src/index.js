@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/user", require("./routes/userRoute"));
 app.use("/api/hospital", require("./routes/hosRoute"));
+app.use("/api/medico", require("./routes/medRoute"));
 
 /* Inicialización del servidor */
 

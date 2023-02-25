@@ -8,17 +8,23 @@
 4. Planeación a lapiz y papel de la base datos con base en los requerimientos.
 5. Realización de modelos para base de datos en MongoDB
 6. Creación de rutas y lógica de programación para cada funcionalidad requerida:
+   6.1 Comprobación si el registro ya existe antes de hacerlo
+   6.1 registro de usuarios
+   6.2 encriptación de contraseñas todo
+
    El usuario no podrá acceder al sistema hasta que confirme su registro.
 
-## Live application
+## Para usar
 
 My application deployed is in the link shown below
 
 [Vercel](https://instaya-frontend-beige.vercel.app/)
 
-## Document
+## A tener en cuenta
 
-The formal document (in spanish) for this project is shown below
+1. El tiempo de espera para poder usar la base de datos en MongoDB es de alredero 30seg a 1min, enviar peticiones antes de este tiempo puede para el servidor.
+2. Se deben enviar las peticiones en formato .JSON
+3. Todos los datos que componen en .JSON son obligatorios, de no hacerlo o de errar en el formato podría hacer que el servidor se pare.
 
 [Google Drive](cambhttps://drive.google.com/file/d/1y6WoCVnUTGplz7t54d1APP1JbgbVqISF/view?usp=share_linkiar)
 
