@@ -8,8 +8,7 @@ const { mongoose } = require("./db");
 
 /* Acceso a variables de entorno */
 
-/* require("dotenv").config(); */
-dotenv.config();
+require("dotenv").config();
 
 /* Configuración servidor */
 
