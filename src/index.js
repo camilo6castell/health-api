@@ -1,6 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-const path = require("node:path");
+const path = require("path");
 
 /* Importar base de datos */
 
