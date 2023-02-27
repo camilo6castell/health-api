@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
-require("dotenv").config();
+/* Acceso a variables de entorno */
+const dotenv = require("dotenv");
+dotenv.config();
 
 mongoose.set("strictQuery", true);
 

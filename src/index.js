@@ -7,8 +7,8 @@ const path = require("node:path");
 const { mongoose } = require("./db");
 
 /* Acceso a variables de entorno */
-
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
 
 /* Configuración servidor */
 
