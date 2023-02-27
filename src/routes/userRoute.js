@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const fs = require("fs");
 
 /* VERIFICACION DE EMAIL */
 
@@ -22,6 +23,7 @@ function makeTC(length) {
 const salt = bcrypt.genSaltSync(5);
 
 const userSchema = require("../models/userSchema");
+const medHistorySchema = require("../models/medHistorySchema");
 
 /* CREACIÓN DE RUTAS POR FUNCIONALIDAD */
 
@@ -175,11 +177,35 @@ router.post("/updatepass", async (req, res) => {
 
 router.post("/gethistory", async (req, res) => {
   const idUser = req.body.idUser;
-  const user = await userSchema
-    .findOne({ idUser: idUser })
-    .populate("medHistory");
+  const user = await medHistorySchema.find({ idUser: idUser });
   if (user) {
-    res.json(user.medHistory);
+    res.json(user);
+  } else {
+    res.json({
+      satusCode: 404,
+      status: "Usuario no encontrado",
+    });
+  }
+});
+
+/* 6. DESCARGA DE TODAS LAS OBSERVACIONES HECHAS A UN PACIENTE */
+
+router.get("/download", async (req, res) => {
+  const idUser = req.body.idUser;
+  const user = await medHistorySchema.find({ idUser: idUser });
+  if (user) {
+    var writeStream = fs.createWriteStream("observaciones.txt");
+    for (let i = 0; i < user.length; i++) {
+      const element = user[i];
+      if (i == 0) {
+        var line = `Observaciones para el paciente ${element.idUser}:\n\nDoctor ${element.idMed}: ${element.observations}\n`;
+        writeStream.write(line);
+      } else {
+        var line = `Doctor ${element.idMed}: ${element.observations}\n`;
+        writeStream.write(line);
+      }
+    }
+    res.download("observaciones.txt");
   } else {
     res.json({
       satusCode: 404,
@@ -189,3 +215,14 @@ router.post("/gethistory", async (req, res) => {
 });
 
 module.exports = router;
+
+/* for (let i = 0; i < user.length; i++) {
+  const element = user[i];
+  if (i == 0) {
+    var line = `Observaciones para el paciente ${element.idUser}: \n
+  Doctor ${element.idMed}: ${element.observations}\n`;
+  } else {
+    var line = `Doctor ${element.idMed}: ${element.observations}\n`;
+  }
+  writeStream.write(line);
+} */
