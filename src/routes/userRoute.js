@@ -166,7 +166,7 @@ router.post("/updatepass", async (req, res) => {
   } else {
     res.json({
       statusCode: 404,
-      status: "Credenciales inválidas",
+      status: "Usuario no existe, por favor revisa tus credenciales",
     });
   }
 });
@@ -175,7 +175,9 @@ router.post("/updatepass", async (req, res) => {
 
 router.post("/gethistory", async (req, res) => {
   const idUser = req.body.idUser;
-  const user = await userSchema.findOne({ idUser: idUser });
+  const user = await userSchema
+    .findOne({ idUser: idUser })
+    .populate("medHistory");
   if (user) {
     res.json(user.medHistory);
   } else {

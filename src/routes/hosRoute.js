@@ -24,6 +24,7 @@ const salt = bcrypt.genSaltSync(5);
 /* require("dotenv").config(); */
 
 const hosSchema = require("../models/hosSchema");
+const medHistorySchema = require("../models/medHistorySchema");
 
 /* CREACIÓN DE RUTAS POR FUNCIONALIDAD */
 
@@ -61,17 +62,18 @@ router.post("/register", async (req, res) => {
       from: '"Email sender" <emailvalidator@registrosmedicos.com',
       to: `${email}`,
       subject: "Validation email",
-      html: `<p>Buenos días. El hospital ${name} recientemete ha sido registrado en nuestra aplicación de registros médicos, 
+      html: `<p>Buen día! El hospital ${name} recientemete ha sido registrado en nuestra aplicación de registros médicos, 
         pero para poder usar nuestros servicios es necesario que verifiques tu dirección de email. Para verificarla
         deberás hacer click en el siguiente enlace. Gracias por usar nuestros servicios!</p>
   
-        <p><a href="http://localhost:7654/api/medico/verify/${idHos}/${token}"> <button>¡Click acá para validar el email!</button></a></p>
+        <p><a href="http://localhost:7654/api/hospital/verify/${idHos}/${token}"> <button>¡Click acá para validar el email!</button></a></p>
         
         <p>Cordialmente,</p>`,
     });
     res.json({
       statusCode: 200,
-      status: "¡Hospital guardado!",
+      status: `Hospital creado. El email de prueba ha sido enviado, este correo electrónico no llegará a su correo para evitar problemas de seguridad y/o de filtros de spam. Por favor siga el siguiente enlace para validar el email. El enlace l@ llevará a una página pensada para testear correos electrónicos como este. *El token generado tiene una duración de 60 minutos de validez, después de este tiempo no se podrá utilizar*`,
+      enlace: `${nodemailer.getTestMessageUrl(info)}`,
     });
   } else {
     res.json({
@@ -83,9 +85,9 @@ router.post("/register", async (req, res) => {
 /* 2. LOGIN DE HOSPITAL */
 
 router.post("/login", async (req, res) => {
-  const isHos = await hosSchema.findOne({ idHos: req.body.idHos });
+  const isHos = await hosSchema.findOne({ idHos: req.body.idHos }).exec();
   if (isHos) {
-    if (bcrypt.compareSync(req.body.password, isMed.password)) {
+    if (bcrypt.compareSync(req.body.password, isHos.password)) {
       if (isHos.verified.activated == false) {
         res.json({
           statusCode: 404,
@@ -117,7 +119,7 @@ router.post("/login", async (req, res) => {
 router.get("/verify/:idHos/:token", async (req, res) => {
   const idHos = req.params.idHos;
   const isToken = req.params.token;
-  const hos = await medSchema.findOne({ idHos: idHos });
+  const hos = await hosSchema.findOne({ idHos: idHos });
   if (isToken == hos.verified.token) {
     hos.verified.activated = true;
     await hos.save();
@@ -134,20 +136,29 @@ router.get("/verify/:idHos/:token", async (req, res) => {
   }
 });
 
+/* 4. CAMBIO DE CONTRASEÑA */
+
 router.post("/updatepass", async (req, res) => {
   const idHos = req.body.idHos;
   const password = req.body.password;
-  const newPassword = req.body.newPassword;
+  let newPassword = req.body.newPassword;
   const hos = await hosSchema.findOne({ idHos: idHos });
   if (hos) {
-    if (bcrypt.compareSync(password, med.password)) {
-      const newPassword = bcrypt.hashSync(newPassword, salt);
-      hos.password = newPassword;
-      hos.save();
-      res.json({
-        statusCode: 200,
-        status: "Contraseña cambiada con éxito",
-      });
+    if (bcrypt.compareSync(password, hos.password)) {
+      if (bcrypt.compareSync(newPassword, hos.password)) {
+        res.json({
+          statusCode: 200,
+          status: "La nueva contraseña tiene que ser diferente a la anterior",
+        });
+      } else {
+        newPassword = bcrypt.hashSync(newPassword, salt);
+        hos.password = newPassword;
+        hos.save();
+        res.json({
+          statusCode: 200,
+          status: "Contraseña cambiada con éxito",
+        });
+      }
     } else {
       res.json({
         statusCode: 404,
@@ -160,6 +171,14 @@ router.post("/updatepass", async (req, res) => {
       status: "Credenciales inválidas",
     });
   }
+});
+
+/* 5. CONSULTAR HISTORIAS CLINICAS CON MISMO HOSPITAL */
+
+router.post("/gethistory", async (req, res) => {
+  const idHos = req.body.idHos;
+  const medHistory = await medHistorySchema.find({ idHos: idHos });
+  res.json(medHistory);
 });
 
 module.exports = router;

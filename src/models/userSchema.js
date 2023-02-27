@@ -11,15 +11,6 @@ const userSchema = new Schema({
   verified: { activated: { type: Boolean }, token: { type: String } },
   email: { type: String, required: true },
   phone: { type: String, required: true },
-  medHistory: [
-    {
-      idMed: { type: String, required: true },
-      idHos: { type: String, required: true },
-      speciality: { type: String, required: true },
-      healthCondition: { type: String, required: true },
-      observations: { type: String, required: true },
-    },
-  ],
 });
 
 module.exports = mongoose.model("userSchema", userSchema);

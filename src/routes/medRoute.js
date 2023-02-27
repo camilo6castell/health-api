@@ -28,6 +28,7 @@ function makeTC(length) {
 const medSchema = require("../models/medSchema");
 const hosSchema = require("../models/hosSchema");
 const userSchema = require("../models/userSchema");
+const medHistorySchema = require("../models/medHistorySchema");
 
 /* CREACIÓN DE RUTAS POR FUNCIONALIDAD */
 
@@ -101,18 +102,18 @@ router.post("/register", async (req, res) => {
 /* 2. LOGIN DE MEDICO */
 
 router.post("/login", async (req, res) => {
-  const isUser = await medSchema.findOne({ idMed: req.body.idMed });
+  const isMed = await medSchema.findOne({ idMed: req.body.idMed });
   console.log(req.body.idMed);
-  if (isUser) {
-    if (bcrypt.compareSync(req.body.password, isUser.password)) {
-      if (isUser.verified.activated == false) {
+  if (isMed) {
+    if (bcrypt.compareSync(req.body.password, isMed.password)) {
+      if (isMed.verified.activated == false) {
         res.json({
           statusCode: 404,
           status:
             "Recuerda que debes verificar tu email primero antes de comenzar a usar nuestros servicios",
         });
       } else {
-        if (isUser.sessionNum == 0) {
+        if (isMed.sessionNum == 0) {
           res.json({
             statusCode: 404,
             status:
@@ -199,7 +200,7 @@ router.post("/updatepass", async (req, res) => {
   }
 });
 
-/* AGREGAR HISTORIAS CLÍNICAS */
+/* 5. AGREGAR HISTORIAS CLÍNICAS */
 
 router.post("/addhistory", async (req, res) => {
   const { idUser, idMed, idHos, speciality, healthCondition, observations } =
@@ -208,13 +209,17 @@ router.post("/addhistory", async (req, res) => {
   const med = await userSchema.findOne({ idMed: idMed });
   const hos = await userSchema.findOne({ idHos: idHos });
   if (user && med && hos) {
-    user.medHistory = [
-      ...user.medHistory,
-      { idUser, idMed, idHos, speciality, healthCondition, observations },
-    ];
-    await user.save();
+    const newMedHistory = new medHistorySchema({
+      idUser,
+      idMed,
+      idHos,
+      speciality,
+      healthCondition,
+      observations,
+    });
+    newMedHistory.save();
     res.json({
-      statusCode: 404,
+      statusCode: 200,
       status: `La historia médica para ${idUser} realizada por el doctor ${idMed} ha sido guardada`,
     });
   } else {
@@ -226,24 +231,12 @@ router.post("/addhistory", async (req, res) => {
   }
 });
 
-/* CONSULTAR HISTORIAS CLINICAS CON MISMO DOCTOR */
+/* 6. CONSULTAR HISTORIAS CLINICAS CON MISMO DOCTOR */
 
 router.post("/gethistory", async (req, res) => {
   const idMed = req.body.idMed;
-  const users = await userSchema.findOne({ "medHistory.idMed": idMed });
-
-  console.log(users);
+  const medHistory = await medHistorySchema.find({ idMed: idMed });
+  res.json(medHistory);
 });
-/*   let history = [];
-  for (let i = 0; i < users.length; i++) {
-    const element = users[i];
-    console.log(element);
-    if (element["medHistory"].idMed == idMed) {
-      history = [...history, element["medHistory"]];
-    }
-  }
- */
-/*   console.log(history); */
-/* }); */
 
 module.exports = router;

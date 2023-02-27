@@ -8,7 +8,7 @@ const hosSchema = new Schema({
   name: { type: String, required: true },
   address: { type: String, required: true },
   services: [{ type: String, required: true }],
-  verified: { type: Boolean, required: true },
+  verified: { activated: { type: Boolean }, token: { type: String } },
   email: { type: String, required: true },
   phone: { type: String, required: true },
 });
