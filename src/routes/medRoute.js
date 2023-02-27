@@ -23,64 +23,77 @@ function makeTC(length) {
   return result;
 }
 
-/* IMPORTACIÓN DE SCHEMA */
+/* IMPORTACIÓN DE SCHEMAs */
 
 const medSchema = require("../models/medSchema");
+const hosSchema = require("../models/hosSchema");
+const userSchema = require("../models/userSchema");
 
 /* CREACIÓN DE RUTAS POR FUNCIONALIDAD */
 
 /* 1. REGISTRO DE USUARIOS */
 
 router.post("/register", async (req, res) => {
-  const { idMed, name, address, dob, email, phone } = req.body;
+  const { idMed, idHos, name, address, dob, email, phone } = req.body;
+  const isHos = await hosSchema.find({ idHos: idHos }).exec();
   const isUser = await medSchema.find({ idMed: idMed }).exec();
-  if (isUser.length == 0) {
-    const sessionNum = 0;
-    const password = bcrypt.hashSync(req.body.password, salt);
-    const token = makeTC(5);
-    const verified = { activated: false, token: token };
-    const newMed = new medSchema({
-      idMed,
-      password,
-      name,
-      address,
-      dob,
-      verified,
-      email,
-      phone,
-      sessionNum,
-    });
-    await newMed.save();
-    let testAccount = await nodemailer.createTestAccount();
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-    let info = await transporter.sendMail({
-      from: '"Email sender" <emailvalidator@registrosmedicos.com',
-      to: `${email}`,
-      subject: "Validation email",
-      html: `<p>Buenos días doctor ${name}, recientemete te has registrado en nuestra aplicación de registros médicos, 
-        pero para poder usar nuestros servicios es necesario que verifiques tu dirección de email. Para verificarla
-        deberás hacer click en el siguiente enlace. Gracias por usar nuestros servicios!</p>
-  
-        <p><a href="http://localhost:7654/api/medico/verify/${idMed}/${token}"> <button>¡Click acá para validar el email!</button></a></p>
-        
-        <p>Cordialmente,</p>`,
-    });
-    res.json({
-      statusCode: 200,
-      status: `El email de prueba ha sido enviado, este correo electrónico no llegará a su correo para evitar problemas de seguridad y/o de filtros de spam. Por favor siga el siguiente enlace para validar el email. El enlace l@ llevará a una página pensada para testear correos electrónicos como este. *El token generado tiene una duración de 60 minutos de validez, después de este tiempo no se podrá utilizar*`,
-      enlace: `${nodemailer.getTestMessageUrl(info)}`,
-    });
+  if (isHos) {
+    if (isUser.length == 0) {
+      const sessionNum = 0;
+      const password = bcrypt.hashSync(req.body.password, salt);
+      const token = makeTC(5);
+      const verified = { activated: false, token: token };
+      const newMed = new medSchema({
+        idMed,
+        idHos,
+        password,
+        name,
+        address,
+        dob,
+        verified,
+        email,
+        phone,
+        sessionNum,
+      });
+      await newMed.save();
+      let testAccount = await nodemailer.createTestAccount();
+      let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass,
+        },
+      });
+      let info = await transporter.sendMail({
+        from: '"Email sender" <emailvalidator@registrosmedicos.com',
+        to: `${email}`,
+        subject: "Validation email",
+        html: `<p>Buenos días doctor ${name}, recientemete el hospital ${isHos.name} te ha registrado en nuestra aplicación de registros médicos, 
+                pero para poder usar nuestros servicios es necesario que verifiques tu dirección de email. Para verificarla
+                deberás hacer click en el siguiente enlace. Gracias por usar nuestros servicios!</p>
+          
+                <p><a href="http://localhost:7654/api/medico/verify/${idMed}/${token}"> <button>¡Click acá para validar el email!</button></a></p>
+                
+                <p>Cordialmente,</p>`,
+      });
+      res.json({
+        statusCode: 200,
+        status: `Médico creado. El email de prueba ha sido enviado, este correo electrónico no llegará a su correo para evitar problemas de seguridad y/o de filtros de spam. Por favor siga el siguiente enlace para validar el email. El enlace l@ llevará a una página pensada para testear correos electrónicos como este. *El token generado tiene una duración de 60 minutos de validez, después de este tiempo no se podrá utilizar*`,
+        enlace: `${nodemailer.getTestMessageUrl(info)}`,
+      });
+    } else {
+      res.json({
+        status:
+          "No se puede crear, el médico ya existe en la base de datos del Hospital",
+      });
+    }
   } else {
     res.json({
-      status: "No se puede crear, el médico ya existe",
+      statusCode: 404,
+      status:
+        "Registro no exitoso. No es posible registrar un médico sin un hospital",
     });
   }
 });
@@ -147,5 +160,90 @@ router.get("/verify/:idMed/:token", async (req, res) => {
     });
   }
 });
+
+/* 4. CAMBIO DE CONTRASEÑA */
+
+router.post("/updatepass", async (req, res) => {
+  const idMed = req.body.idMed;
+  const password = req.body.password;
+  let newPassword = req.body.newPassword;
+  const med = await medSchema.findOne({ idMed: idMed });
+  if (med) {
+    if (bcrypt.compareSync(password, med.password)) {
+      if (bcrypt.compareSync(newPassword, med.password)) {
+        res.json({
+          statusCode: 200,
+          status: "La nueva contraseña tiene que ser diferente a la anterior",
+        });
+      } else {
+        newPassword = bcrypt.hashSync(newPassword, salt);
+        med.password = newPassword;
+        med.sessionNum = 1;
+        med.save();
+        res.json({
+          statusCode: 200,
+          status: "Contraseña cambiada con éxito",
+        });
+      }
+    } else {
+      res.json({
+        statusCode: 404,
+        status: "Credenciales inválidas",
+      });
+    }
+  } else {
+    res.json({
+      statusCode: 404,
+      status: "Credenciales inválidas",
+    });
+  }
+});
+
+/* AGREGAR HISTORIAS CLÍNICAS */
+
+router.post("/addhistory", async (req, res) => {
+  const { idUser, idMed, idHos, speciality, healthCondition, observations } =
+    req.body;
+  const user = await userSchema.findOne({ idUser: idUser });
+  const med = await userSchema.findOne({ idMed: idMed });
+  const hos = await userSchema.findOne({ idHos: idHos });
+  if (user && med && hos) {
+    user.medHistory = [
+      ...user.medHistory,
+      { idUser, idMed, idHos, speciality, healthCondition, observations },
+    ];
+    await user.save();
+    res.json({
+      statusCode: 404,
+      status: `La historia médica para ${idUser} realizada por el doctor ${idMed} ha sido guardada`,
+    });
+  } else {
+    res.json({
+      statusCode: 404,
+      status:
+        "Datos de verificación son incorrectos o inexistentes. Se recomienda revisarlos y volverlo a intentar",
+    });
+  }
+});
+
+/* CONSULTAR HISTORIAS CLINICAS CON MISMO DOCTOR */
+
+router.post("/gethistory", async (req, res) => {
+  const idMed = req.body.idMed;
+  const users = await userSchema.findOne({ "medHistory.idMed": idMed });
+
+  console.log(users);
+});
+/*   let history = [];
+  for (let i = 0; i < users.length; i++) {
+    const element = users[i];
+    console.log(element);
+    if (element["medHistory"].idMed == idMed) {
+      history = [...history, element["medHistory"]];
+    }
+  }
+ */
+/*   console.log(history); */
+/* }); */
 
 module.exports = router;

@@ -134,4 +134,32 @@ router.get("/verify/:idHos/:token", async (req, res) => {
   }
 });
 
+router.post("/updatepass", async (req, res) => {
+  const idHos = req.body.idHos;
+  const password = req.body.password;
+  const newPassword = req.body.newPassword;
+  const hos = await hosSchema.findOne({ idHos: idHos });
+  if (hos) {
+    if (bcrypt.compareSync(password, med.password)) {
+      const newPassword = bcrypt.hashSync(newPassword, salt);
+      hos.password = newPassword;
+      hos.save();
+      res.json({
+        statusCode: 200,
+        status: "Contraseña cambiada con éxito",
+      });
+    } else {
+      res.json({
+        statusCode: 404,
+        status: "Credenciales inválidas",
+      });
+    }
+  } else {
+    res.json({
+      statusCode: 404,
+      status: "Credenciales inválidas",
+    });
+  }
+});
+
 module.exports = router;
