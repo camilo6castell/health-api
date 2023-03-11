@@ -25,9 +25,8 @@ Para la realización de esta API se siguieson los siguientes pasos:
 11. Creación de funcionalidades especiales para los diferentes actores con ayuda de datos de prueba (adjuntos más adelante).
 12. Correción en schemas para responder de manera precisa a peticiones.
 13. Agregar posibilidad de descargar archivo con información
-14. creación y correción de README.MD.
-
-El usuario no podrá acceder al sistema hasta que confirme su registro.
+14. Creación y correción de README.MD
+15. Despliegue del servicio web (API REST) en servicio web gratuito en linea
 
 ## Consideraciones
 
@@ -37,6 +36,7 @@ Para el correcto funcionamiento de esta API se deben acatar la siguientes condic
 2. El tiempo de espera para poder usar la base de datos en MongoDB es de alredero 30seg a 1min. Enviar peticiones antes de este tiempo puede para el servidor.
 3. Se deben enviar las peticiones en formato .JSON (en el formato que se mostrará más adelante en la sección de "Modo de uso")
 4. Todos los datos que componen en .JSON son obligatorios, de no hacerlo o de errar en el formato podría hacer que el servidor se pare.
+5. Para el correcto funcionamiento del servicio web (API REST), se deben tener en cuenta reglas exigidas por el proyecto. Estas reglas son por ejemplo: Un usuario no podrá acceder a la plataforma si no confirma su email, debe existir un usuario hospital antes de crear un usuario médico para poder vincularlos, el usuario médico deberá cambiar la contraseña a primera vez que inicio sesión, etc.
 
 ## Modo de uso con datos [opcionales] de prueba
 
@@ -93,7 +93,7 @@ Conseguir historia clínica de usuario
 POST http://localhost:7654/api/user/gethistory
 
 {
-  "idUser": "test2"
+  "idUser": "usuario3"
 }
 ```
 
@@ -188,11 +188,11 @@ Crear cuenta de hospital
 POST http://localhost:7654/api/hospital/register
 
 {
-  "idHos": "hospital1",
+  "idHos": "hospital10",
   "password": "123",
   "name": "123",
   "address": "123",
-  "services": [],
+  "services": ["oftalmología", "cardiología", "pediatría"],
   "email": "123@gmail.com",
   "phone": "123"
 }
