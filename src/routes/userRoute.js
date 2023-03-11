@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const fs = require("fs");
+const path = require("path");
 
 /* 1. IMPORTACIÓN DE SCHEMAS PARA MONGODB */
 
@@ -255,25 +256,42 @@ router.post("/gethistory", async (req, res) => {
 /* 4.6. DESCARGA DE TODAS LAS OBSERVACIONES HECHAS A UN PACIENTE */
 
 router.get("/download", async (req, res) => {
-  const idUser = req.body.idUser;
-  const user = await medHistorySchema.find({ idUser: idUser });
-  if (user) {
-    var writeStream = fs.createWriteStream("observaciones.txt");
-    for (let i = 0; i < user.length; i++) {
-      const element = user[i];
-      if (i == 0) {
-        var line = `Observaciones para el paciente ${element.idUser}:\n\nDoctor ${element.idMed}: ${element.observations}\n`;
-        writeStream.write(line);
+  if (req.body.idUser) {
+    const idUser = req.body.idUser;
+    try {
+      const user = await medHistorySchema.find({ idUser: idUser });
+      if (user.length != 0) {
+        var writeStream = fs.createWriteStream(
+          path.join("src", "public", "observaciones.txt")
+        );
+        for (let i = 0; i < user.length; i++) {
+          const element = user[i];
+          if (i == 0) {
+            var line = `Observaciones para el paciente ${element.idUser}:\n\nDoctor ${element.idMed}: ${element.observations}\n`;
+            writeStream.write(line);
+          } else {
+            var line = `Doctor ${element.idMed}: ${element.observations}\n`;
+            writeStream.write(line);
+          }
+        }
+        writeStream.end();
+        res
+          .status(200)
+          .download(path.join("src", "public", "observaciones.txt"));
       } else {
-        var line = `Doctor ${element.idMed}: ${element.observations}\n`;
-        writeStream.write(line);
+        res.status(404).json({
+          message: "No hay registros para el usuario consultado",
+        });
       }
+    } catch (error) {
+      res.status(400).json({
+        message: `Ha surgido un error al comunicarse con nuestro sistema de base de datos. Por favor verifique el formato sugerido en el archivo README.md para la información que nos está intentando enviar. (El error fue: ${error})`,
+      });
     }
-    res.download("observaciones.txt");
   } else {
-    res.json({
-      satusCode: 404,
-      status: "Usuario no encontrado",
+    res.status(400).json({
+      message:
+        "Datos incompletos o incorrectos, por favor revisar el formato descrito en el archivo README.md para poder consultar historia clínica del hospital",
     });
   }
 });
