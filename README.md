@@ -45,7 +45,11 @@ Para el correcto funcionamiento de esta API se deben acatar la siguientes condic
 Crear usuario
 
 ```javascript
-POST http://localhost:7654/api/user/register
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/user/register
+
+Local:
+  POST http://localhost:5000/api/user/register
 
 {
   "idUser": "usuario80",
@@ -65,7 +69,10 @@ Validar usuario correo
 Login usuario
 
 ```javascript
-POST http://localhost:7654/api/user/login
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/user/login
+Local:
+  POST http://localhost:5000/api/user/login
 
 {
   "idUser": "usario3",
@@ -76,7 +83,10 @@ POST http://localhost:7654/api/user/login
 Cambiar password usuario
 
 ```javascript
-POST http://localhost:7654/api/user/updatepass
+Deploy:
+  PATCH https://health-api-wuip.onrender.com/api/user/updatepass
+Local:
+  PATCH http://localhost:5000/api/user/updatepass
 
 {
   "idUser": "usuario3",
@@ -88,7 +98,10 @@ POST http://localhost:7654/api/user/updatepass
 Conseguir historia clínica de usuario
 
 ```javascript
-POST http://localhost:7654/api/user/gethistory
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/user/gethistory
+Local:
+  POST http://localhost:5000/api/user/gethistory
 
 {
   "idUser": "usuario3"
@@ -98,7 +111,10 @@ POST http://localhost:7654/api/user/gethistory
 Descargar observaciones médicas de usuario
 
 ```javascript
-GET http://localhost:7654/api/user/download
+Deploy:
+  GET https://health-api-wuip.onrender.com/api/user/download
+Local:
+  GET http://localhost:5000/api/user/download
 
 {
   "idUser": "usuario3"
@@ -110,7 +126,10 @@ GET http://localhost:7654/api/user/download
 Crear medico
 
 ```javascript
-POST http://localhost:7654/api/medico/register
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/medico/register
+Local:
+  POST http://localhost:5000/api/medico/register
 
 {
   "idMed": "medico1",
@@ -131,7 +150,10 @@ Validar usuario medico
 Login médico
 
 ```javascript
-POST http://localhost:7654/api/medico/login
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/medico/login
+Local:
+  POST http://localhost:5000/api/medico/login
 
 {
   "idMed": "medico1",
@@ -142,7 +164,10 @@ POST http://localhost:7654/api/medico/login
 Cambiar password médico
 
 ```javascript
-POST http://localhost:7654/api/hospital/updatepass
+Deploy:
+  PATCH https://health-api-wuip.onrender.com/api/hospital/updatepass
+Local:
+  PATCH http://localhost:5000/api/hospital/updatepass
 
 {
   "idMed": "medico",
@@ -154,7 +179,10 @@ POST http://localhost:7654/api/hospital/updatepass
 Agregar a historia clínica
 
 ```javascript
-POST http://localhost:7654/api/medico/addhistory
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/medico/addhistory
+Local:
+  POST http://localhost:5000/api/medico/addhistory
 
 {
   "idUser": "usuario1",
@@ -169,7 +197,10 @@ POST http://localhost:7654/api/medico/addhistory
 Conseguir todas las historias clinicas del mismo médico
 
 ```javascript
-POST http://localhost:7654/api/medico/gethistory
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/medico/gethistory
+Local:
+  POST http://localhost:5000/api/medico/gethistory
 
 {
   "idMed": "medico3"
@@ -181,7 +212,10 @@ POST http://localhost:7654/api/medico/gethistory
 Crear cuenta de hospital
 
 ```javascript
-POST http://localhost:7654/api/hospital/register
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/hospital/register
+Local:
+  POST http://localhost:5000/api/hospital/register
 
 {
   "idHos": "hospital10",
@@ -198,10 +232,13 @@ Validar usuario hospital
 
 > _Al momento de enviar la petición POST, el servidor devolverá el enlace para ir a la plataforma de validación de correo electrónico._
 
-Login usuario
+Login hospital
 
 ```javascript
-POST http://localhost:7654/api/hospital/login
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/hospital/login
+Local:
+  POST http://localhost:5000/api/hospital/login
 
 {
   "idHos": "hospital3",
@@ -212,7 +249,10 @@ POST http://localhost:7654/api/hospital/login
 Cambiar password hospital
 
 ```javascript
-POST http://localhost:7654/api/hospital/updatepass
+Deploy:
+  PATCH https://health-api-wuip.onrender.com/api/hospital/updatepass
+Local:
+  PATCH http://localhost:5000/api/hospital/updatepass
 
 {
   "idHos": "hospital3",
@@ -224,7 +264,10 @@ POST http://localhost:7654/api/hospital/updatepass
 Conseguir todas las historias clinicas de los médicos del mismo hospital
 
 ```javascript
-POST http://localhost:7654/api/hospital/gethistory
+Deploy:
+  POST https://health-api-wuip.onrender.com/api/hospital/gethistory
+Local:
+  POST http://localhost:5000/api/hospital/gethistory
 
 {
   "idHos": "hospital3"

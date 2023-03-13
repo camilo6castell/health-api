@@ -185,7 +185,7 @@ router.get("/verify/:idHos/:token", async (req, res) => {
 
 /* 4.4. CAMBIO DE CONTRASEÑA */
 
-router.post("/updatepass", async (req, res) => {
+router.patch("/updatepass", async (req, res) => {
   if (req.body.idHos && req.body.password) {
     const idHos = req.body.idHos;
     const password = req.body.password;

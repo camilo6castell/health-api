@@ -198,7 +198,7 @@ router.get("/verify/:idMed/:token", async (req, res) => {
 
 /* 4.4. CAMBIO DE CONTRASEÑA */
 
-router.post("/updatepass", async (req, res) => {
+router.patch("/updatepass", async (req, res) => {
   if (req.body.idMed && req.body.password && req.body.newPassword) {
     const idMed = req.body.idMed;
     const password = req.body.password;

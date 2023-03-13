@@ -4,6 +4,10 @@ const bcrypt = require("bcryptjs");
 const fs = require("fs");
 const path = require("path");
 
+/* VARIABLE DE ARCHIVO A DESCARGAR */
+
+const filePath = path.join("src", "public", "observaciones.txt");
+
 /* 1. IMPORTACIÓN DE SCHEMAS PARA MONGODB */
 
 const userSchema = require("../models/userSchema");
@@ -180,7 +184,7 @@ router.get("/verify/:idUser/:token", async (req, res) => {
 
 /* 4.4. CAMBIAR CONTRASEÑA */
 
-router.post("/updatepass", async (req, res) => {
+router.patch("/updatepass", async (req, res) => {
   if (req.body.idUser && req.body.password && req.body.newPassword) {
     const idUser = req.body.idUser;
     const password = req.body.password;
@@ -259,25 +263,26 @@ router.get("/download", async (req, res) => {
   if (req.body.idUser) {
     const idUser = req.body.idUser;
     try {
-      const user = await medHistorySchema.find({ idUser: idUser });
+      const user = await medHistorySchema.find({ idUser: idUser }).exec();
       if (user.length != 0) {
-        var writeStream = fs.createWriteStream(
-          path.join("src", "public", "observaciones.txt")
-        );
+        let content = "";
         for (let i = 0; i < user.length; i++) {
           const element = user[i];
           if (i == 0) {
             var line = `Observaciones para el paciente ${element.idUser}:\n\nDoctor ${element.idMed}: ${element.observations}\n`;
-            writeStream.write(line);
+            content += line;
           } else {
             var line = `Doctor ${element.idMed}: ${element.observations}\n`;
-            writeStream.write(line);
+            content += line;
           }
         }
-        writeStream.end();
-        res
-          .status(200)
-          .download(path.join("src", "public", "observaciones.txt"));
+        fs.writeFile(filePath, content, (e) => {
+          if (e) {
+            console.log(e);
+          } else {
+            res.status(200).download(filePath);
+          }
+        });
       } else {
         res.status(404).json({
           message: "No hay registros para el usuario consultado",
