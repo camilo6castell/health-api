@@ -1,48 +1,58 @@
 # API para sistema de gestión de historia clínica centralizada
 
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-AA2929?style=for-the-badge&logo=mongoose&logoColor=white)
+![bcrypt](https://img.shields.io/badge/bcrypt-339933?style=for-the-badge&logo=security&logoColor=white)
+![dotenv](https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=envato&logoColor=black)
+![morgan](https://img.shields.io/badge/morgan-000000?style=for-the-badge&logo=logging&logoColor=white)
+![nodemailer](https://img.shields.io/badge/nodemailer-3B7D3C?style=for-the-badge&logo=email&logoColor=white)
+![nodemon](https://img.shields.io/badge/nodemon-76D04B?style=for-the-badge&logo=nodemon&logoColor=white)
+
 ## About
 
-Api realizada para gestionar hospitales, médicos y usuarios de un sistema de historia clínica centralizada.
+API created to manage hospitals, doctors and users of a centralized medical history system.
 
-Esta API se desarrollo en Node.js con ayuda de express.js. y para el manejo de base de datos se utilizó mongoDB. Además del software ya mencionado, se usaron Mongoose, bcrypt, dotenv, morgan, nodemail y nodemon. Gracias a ellas pude realizar este trabajo.
+This API was developed in Node.js with the help of express.js. and mongoDB is used to manage the database. In addition to the software already mentioned, Mongoose, bcrypt, dotenv, morgan, nodemail and nodemon were used. Thanks to them I was able to do this work.
 
-Como carácterística de esta API resalto que se hicieron validaciones en la entrada de datos y su respectivo manejo de errores. Adicionalmente se tuvo en cuenta la seguridad y privacidad en el manejo de los datos de cada actor del sistema.
+As a feature of this API, I would like to highlight that validations were made in the data entry and its respective error handling. In addition, I especially consider the security and privacy in the handling of the data of each actor in the system.
 
-## Pasos en la realización de este proyecto
+## Steps in the realization of this project
 
-Para la realización de esta API se siguieron los siguientes pasos:
+The following steps were followed to create this API:
 
-1. Creación de proyecto con npm init.
-2. Instalación de Express.js junto con dependencias necesarias para el funcionamiento de la API y para desarrollo de la misma (mongoose, dotev, morgan, nodemon).
-3. Configuración de variables de entorno en .env y hacerlas accesibles en archivos .js.
-4. Planeación a lapiz y papel de la base datos con base en los requerimientos.
-5. Realización de modelos (schemas) para base de datos en MongoDB.
-6. Creación de rutas y lógica de programación para cada funcionalidad requerida.
-7. Realización de validación con forme se hacen funcionalidades.
-8. Registro de usuarios con respectivas condiciones.
-9. Encriptación de contraseñas y creación de token de validación de email.
-10. Creación de lógica para envío de email de validación de usuarios.
-11. Creación de funcionalidades especiales para los diferentes actores con ayuda de datos de prueba (adjuntos más adelante).
-12. Correción en schemas para responder de manera precisa a peticiones.
-13. Agregar posibilidad de descargar archivo con información requerida.
-14. Creación y correción de README.MD.
-15. Despliegue del servicio web (API REST) en servicio web gratuito en linea.
+1. Planning the database with pencil and paper based on the requirements.
+2. Project creation with npm init.
+3. Installation of Express.js along with dependencies necessary for the operation of the API and for its development (mongoose, dotev, morgan, nodemon).
+4. Configuration of environment variables in .env and making them accessible in .js files.
+5. Creation of models (schemas) for the MongoDB database.
+6. Creation of routes and programming logic for each required functionality.
+7. Validation as functionalities are created.
+8. User registration with respective conditions.
+9. Password encryption and creation of email validation token.
+10. Creation of logic for sending user validation emails.
+11. Creation of special functionalities for the different actors with the help of test data (attached below).
+12. Correction of schemas to respond accurately to requests.
+13. Add possibility to download file with required information.
+14. Creation and correction of README.MD.
+15. Deployment of web service (REST API) in free online web service.
 
-## Consideraciones
+## Considerations
 
-Para el correcto funcionamiento de esta API se deben acatar la siguientes condiciones del sistema:
+For the correct operation of this API, the following system conditions must be met:
 
-1. Se aconseja usar alguna herramienta de API para hacer peticiones (ThunderClient, Postman, etc).
-2. Se deben enviar las peticiones en formato .JSON (el formato que se mostrará más adelante en la sección de "Modo de uso").
-3. Se debe usar el método específico en cada petición como se muestra en la sección "Modo de uso" más abajo es tes archivo.
-4. Todos las llaves que componen el .JSON para cada petición son obligatorios.
-5. Para el correcto funcionamiento del servicio web (API REST), se deben tener en cuenta reglas exigidas por el proyecto. Estas reglas son por ejemplo: Un usuario no podrá acceder a la plataforma si no confirma su email, debe existir un usuario hospital antes de crear un usuario médico para poder vincularlos, el usuario médico deberá cambiar la contraseña la primera vez que inicio sesión, etc.
+1. It is advisable to use some API tool to make requests (ThunderClient, Postman, etc.).
+2. Requests must be sent in .JSON format (the format that will be shown later in the "How to use" section).
+3. The specific method must be used in each request as shown in the "How to use" section below in this file.
+4. All the keys that make up the .JSON for each request are mandatory.
+5. For the correct operation of the web service (REST API), rules required by the project must be taken into account. These rules are, for example: a) A user will not be able to access the platform if they do not confirm their email, b) a hospital user must exist before creating a medical user in order to link them, c) the medical user must change the password the first time they log in, etc.
 
-## Modo de uso con datos [opcionales] de prueba
+## Usage mode with [optional] test data
 
 ### User
 
-Crear usuario
+Create user
 
 ```javascript
 Deploy:
@@ -62,11 +72,10 @@ Local:
 }
 ```
 
-Validar usuario correo
+Validate user email
 
-> _Al momento de enviar la petición POST, el servidor devolverá el enlace para ir a la plataforma de validación de correo electrónico._
-
-Login usuario
+> _When sending the POST request, the server will return the link to go to the email validation platform._
+> Login usuario
 
 ```javascript
 Deploy:
@@ -80,7 +89,7 @@ Local:
 }
 ```
 
-Cambiar password usuario
+Change user password
 
 ```javascript
 Deploy:
@@ -95,7 +104,7 @@ Local:
 }
 ```
 
-Conseguir historia clínica de usuario
+Obtain user medical history
 
 ```javascript
 Deploy:
@@ -108,7 +117,7 @@ Local:
 }
 ```
 
-Descargar observaciones médicas de usuario
+Download user medical comments
 
 ```javascript
 Deploy:
@@ -121,9 +130,9 @@ Local:
 }
 ```
 
-### Medico
+### Doctor
 
-Crear medico
+Create doctor
 
 ```javascript
 Deploy:
@@ -143,11 +152,11 @@ Local:
 }
 ```
 
-Validar usuario medico
+Validate medical user
 
-> _Al momento de enviar la petición POST, el servidor devolverá el enlace para ir a la plataforma de validación de correo electrónico._
+> When sending the POST request, the server will return the link to go to the email validation platform.\_
 
-Login médico
+Medical login
 
 ```javascript
 Deploy:
@@ -161,7 +170,7 @@ Local:
 }
 ```
 
-Cambiar password médico
+Change medical password
 
 ```javascript
 Deploy:
@@ -176,7 +185,7 @@ Local:
 }
 ```
 
-Agregar a historia clínica
+Add to medical history
 
 ```javascript
 Deploy:
@@ -194,7 +203,7 @@ Local:
 }
 ```
 
-Conseguir todas las historias clinicas del mismo médico
+Obtain all medical records from the same doctor
 
 ```javascript
 Deploy:
@@ -209,7 +218,7 @@ Local:
 
 ### Hospital
 
-Crear cuenta de hospital
+Create hospital account
 
 ```javascript
 Deploy:
@@ -228,11 +237,11 @@ Local:
 }
 ```
 
-Validar usuario hospital
+Validate hospital user
 
-> _Al momento de enviar la petición POST, el servidor devolverá el enlace para ir a la plataforma de validación de correo electrónico._
+> _When sending the POST request, the server will return the link to go to the email validation platform._
 
-Login hospital
+Hospital login
 
 ```javascript
 Deploy:
@@ -246,7 +255,7 @@ Local:
 }
 ```
 
-Cambiar password hospital
+Change hospital password
 
 ```javascript
 Deploy:
@@ -261,7 +270,7 @@ Local:
 }
 ```
 
-Conseguir todas las historias clinicas de los médicos del mismo hospital
+Obtain all the medical records of the doctors at the same hospital
 
 ```javascript
 Deploy:
